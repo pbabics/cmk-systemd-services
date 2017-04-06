@@ -1,0 +1,29 @@
+# the inventory function (dummy)
+def inventory_smart_temp(info):
+   for line in info:
+     service_name = line[0]
+     service_status = line[1]
+     
+     yield service_name, None
+
+# the check function (dummy)
+def check_smart_temp(item, params, info):
+   for line in info:
+     if line[0] == item:
+        status = line[1]
+	if status == 'active':
+          return 0, "Service is running"
+	elif status == 'inactive':
+          return 1, "Service is not running"
+	elif status == 'failed':
+          return 2, "Service is FAILED"
+	elif status == 'unknown':
+          return 3, "Service does not exist"
+   return 3, "Sorry - not implemented"
+
+# declare the check to Check_MK
+check_info["systemd_services"] = {
+    'check_function':            check_smart_temp,
+    'inventory_function':        inventory_smart_temp,
+    'service_description':       'Service: %s',
+}
